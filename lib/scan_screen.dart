@@ -5,8 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'dart:io'; // File handling
-import 'package:path_provider/path_provider.dart'; // For app directory paths
-import 'package:path/path.dart'; // For file path manipulation
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ScanScreen extends StatefulWidget {
   @override
@@ -49,22 +48,37 @@ class _CameraScreenState extends State<ScanScreen> {
     try {
       await _initializeControllerFuture;
       final XFile image = await _controller!.takePicture();
+      File file = File(image.path);
       // Handle the image (e.g., save/display)
       print('Picture taken: ${image.path}');
 
+        String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+      // Create a reference to Firebase Storage
+      Reference storageReference = FirebaseStorage.instance
+          .ref()
+          .child('uploads/$fileName.jpg');
+
+      // Upload the file
+      UploadTask uploadTask = storageReference.putFile(file);
+      await uploadTask;
+
+      // Get the download URL
+      String downloadURL = await storageReference.getDownloadURL();
+
       // Get the application documents directory
-      final Directory appDir = await getApplicationDocumentsDirectory();
+      // final Directory appDir = await getApplicationDocumentsDirectory();
 
-      // Create a unique file name using the current timestamp
-      final String fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
+      // // Create a unique file name using the current timestamp
+      // final String fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-      // Full path for the new image
-      final String filePath = join(appDir.path, fileName);
+      // // Full path for the new image
+      // final String filePath = join(appDir.path, fileName);
 
-      // Copy the image from the temp location to the app directory
-      File savedImage = await File(image.path).copy(filePath);
+      // // Copy the image from the temp location to the app directory
+      // File savedImage = await File(image.path).copy(filePath);
 
-      print('Image saved at: $filePath');
+      // print('Image saved at: $filePath');
       
       // Optionally, you can display a confirmation message
       // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
