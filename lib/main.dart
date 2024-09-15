@@ -91,13 +91,8 @@ class _AppState extends State<App> {
       home: Home(
         useLightMode: useLightMode,
         useMaterial3: useMaterial3,
-        colorSelected: colorSelected,
-        imageSelected: imageSelected,
         handleBrightnessChange: handleBrightnessChange,
         handleMaterialVersionChange: handleMaterialVersionChange,
-        handleColorSelect: handleColorSelect,
-        handleImageSelect: handleImageSelect,
-        colorSelectionMethod: colorSelectionMethod,
       ),
     );
   }
